@@ -1,0 +1,49 @@
+
+
+<div class="container">
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-outline-danger" (click)="logout()">Cerrar sesión</button>
+    </div>
+
+    <!-- Filtros -->
+    <form class="row mb-4" (ngSubmit)="filtrar()">
+        <div class="col-auto">
+            <label for="fechaDesde" class="form-label">Desde:</label>
+            <input type="date" id="fechaDesde" [(ngModel)]="fechaDesde" name="fechaDesde" class="form-control" />
+        </div>
+        <div class="col-auto">
+            <label for="fechaHasta" class="form-label">Hasta:</label>
+            <input type="date" id="fechaHasta" [(ngModel)]="fechaHasta" name="fechaHasta" class="form-control" />
+        </div>
+        <div class="col-auto align-self-end">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </form>
+
+    <h2>Dashboard</h2>
+
+    <!-- Cards -->
+    <div class="row">
+        <div class="col">
+            <h3>Total Pedidos</h3>
+            <p>{{ totalPedidos }}</p>
+        </div>
+
+        <div class="col">
+            <h3>Clientes Activos</h3>
+            <p>{{ clientesActivos }}</p>
+        </div>
+    </div>
+
+    <!-- Gráficas -->
+    <div class="row">
+        <div class="col">
+            <canvas id="estadoChart"></canvas>
+        </div>
+
+        <div class="col">
+            <canvas id="diaChart"></canvas>
+        </div>
+    </div>
+
+</div>

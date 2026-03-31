@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=LaMeg@Password123!
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+
+  php:
+    build: ./docker/php
+    container_name: laravel
+    volumes:
+      - ./crm-service:/var/www/html
+    environment:
+      - DB_HOST=mssql
+      - DB_DATABASE=CrmDB
+      - DB_USERNAME=sa
+      - DB_PASSWORD=LaMeg@Password123!
+    depends_on:
+      - mssql
+    networks:
+      - backend
+
+  dotnet:
+    build: ./docker/dotnet
+    container_name: authservice
+    volumes:
+      - ./auth-service/AuthService:/app
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AuthDB;User Id=sa;Password=LaMeg@Password123!;
+    depends_on:
+      - mssql
+    networks:
+      - backend
+
+  angular:
+    build: ./docker/angular
+    container_name: dashboard
+    volumes:
+      - ./dashboard-app:/usr/src/app
+    ports:
+      - "4200:4200"
+    networks:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "443:443"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - php
+      - dotnet
+      - angular
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge

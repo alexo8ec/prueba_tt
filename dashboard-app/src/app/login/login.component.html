@@ -1,0 +1,19 @@
+<div class="login-container">
+  <form *ngIf="!showRegister" (ngSubmit)="login()" class="login-form">
+    <h2>Iniciar sesión</h2>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input id="email" name="email" type="email" [(ngModel)]="email" class="form-control" required />
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña</label>
+      <input id="password" name="password" type="password" [(ngModel)]="password" class="form-control" required />
+    </div>
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <button type="submit" class="btn btn-primary w-100" [disabled]="loading">Entrar</button>
+    <div class="text-center mt-3">
+      <a href="#" (click)="$event.preventDefault(); showRegister = true">¿No tienes cuenta? Regístrate aquí</a>
+    </div>
+  </form>
+  <app-register *ngIf="showRegister" (registerSuccess)="onRegisterSuccess()" (cancel)="showRegister = false"></app-register>
+</div>
