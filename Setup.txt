@@ -20,3 +20,20 @@ docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
 
 dotnet ef migrations add InitialCreate
 dotnet ef database update
+
+
+Crear base para Laravel
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "IF DB_ID('CrmDB') IS NULL CREATE DATABASE CrmDB"
+
+
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "SELECT name FROM sys.databases"

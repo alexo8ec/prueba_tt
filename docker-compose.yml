@@ -13,6 +13,24 @@ services:
       - sql_data:/var/opt/mssql
     expose:
       - "1433"
+    networks:
+      - backend
+
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: laravel-php
+    working_dir: /var/www/html
+    volumes:
+      - ./crm-service:/var/www/html
+    depends_on:
+      - mssql
+    expose:
+      - "9000"
+    networks:
+      - backend
+
   angular:
     build:
       context: ./dashboard-app
@@ -20,6 +38,8 @@ services:
     container_name: angular-app
     expose:
       - "80"
+    networks:
+      - backend
 
   dotnet:
     build:
@@ -31,6 +51,8 @@ services:
       - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AuthDB;User Id=sa;Password=LaMeg@Password123!;TrustServerCertificate=True;
     expose:
       - "80"
+    networks:
+      - backend
 
   nginx:
     image: nginx:alpine
@@ -41,8 +63,17 @@ services:
     depends_on:
       - angular
       - dotnet
+      - php
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./crm-service:/var/www/html
+    networks:
+      - backend
+
 volumes:
   sql_data:
+
+networks:
+  backend:
+    driver: bridge

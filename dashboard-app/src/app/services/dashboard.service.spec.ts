@@ -21,7 +21,7 @@ describe('DashboardService', () => {
 
   it('debería obtener datos del dashboard usando el token', () => {
     service.getDashboard().subscribe();
-    const req = httpMock.expectOne(r => r.url.includes('/api/v1/dashboard'));
+    const req = httpMock.expectOne(r => r.url.includes('/crm/api/v1/dashboard'));
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer test-token');
     req.flush({ data: {} });

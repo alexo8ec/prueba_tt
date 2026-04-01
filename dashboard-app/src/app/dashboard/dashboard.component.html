@@ -1,7 +1,12 @@
 
 
 <div class="container">
-    <div class="d-flex justify-content-end mb-3">
+
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <a routerLink="/clientes" class="btn btn-outline-primary me-2">Ir a Clientes</a>
+            <a routerLink="/pedidos" class="btn btn-outline-success">Ir a Pedidos</a>
+        </div>
         <button class="btn btn-outline-danger" (click)="logout()">Cerrar sesión</button>
     </div>
 

@@ -1,5 +1,11 @@
 <?php
 
+if (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/crm')) {
+    $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 4) ?: '/';
+    $_SERVER['SCRIPT_NAME'] = '/crm/index.php';
+    $_SERVER['PHP_SELF'] = '/crm/index.php';
+}
+
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 

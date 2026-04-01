@@ -6,7 +6,7 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   // Permite sobreescribir el reload en pruebas
   reloadFn = () => window.location.reload();
-  private apiUrl = 'https://localhost/api/auth/login';
+  private apiUrl = '/api/auth/login';
 
   constructor(private http: HttpClient) {}
 

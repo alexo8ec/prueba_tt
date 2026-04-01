@@ -1,0 +1,61 @@
+<div class="pedidos-container">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Pedidos</h2>
+    <a routerLink="/" class="btn btn-outline-secondary">Volver al inicio</a>
+  </div>
+  <button class="btn btn-primary mb-3" (click)="abrirModalAgregar()">Agregar Pedido</button>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pedido of pedidos">
+        <td>{{ pedido.cliente }}</td>
+        <td>{{ pedido.producto }}</td>
+        <td>{{ pedido.cantidad }}</td>
+        <td>
+          <!-- Aquí podrías agregar botones de editar/eliminar si lo deseas -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Modal para agregar pedido -->
+  <div *ngIf="modalAbierto" class="modal-backdrop">
+    <div class="modal">
+      <h3>Agregar Pedido</h3>
+      <form #pedidoForm="ngForm" (ngSubmit)="agregarPedido()">
+        <input [(ngModel)]="nuevoPedido.cliente" name="cliente" placeholder="Cliente" class="form-control mb-2" required minlength="2" #cliente="ngModel">
+        <div *ngIf="cliente.invalid && (cliente.dirty || cliente.touched)" class="text-danger mb-2">
+          <div *ngIf="cliente.errors?.['required']">El cliente es obligatorio.</div>
+          <div *ngIf="cliente.errors?.['minlength']">Debe tener al menos 2 caracteres.</div>
+        </div>
+
+        <input [(ngModel)]="nuevoPedido.producto" name="producto" placeholder="Producto" class="form-control mb-2" required minlength="2" #producto="ngModel">
+        <div *ngIf="producto.invalid && (producto.dirty || producto.touched)" class="text-danger mb-2">
+          <div *ngIf="producto.errors?.['required']">El producto es obligatorio.</div>
+          <div *ngIf="producto.errors?.['minlength']">Debe tener al menos 2 caracteres.</div>
+        </div>
+
+        <input [(ngModel)]="nuevoPedido.cantidad" name="cantidad" type="number" min="1" class="form-control mb-2" required #cantidad="ngModel">
+        <div *ngIf="cantidad.invalid && (cantidad.dirty || cantidad.touched)" class="text-danger mb-2">
+          <div *ngIf="cantidad.errors?.['required']">La cantidad es obligatoria.</div>
+          <div *ngIf="cantidad.errors?.['min']">Debe ser al menos 1.</div>
+        </div>
+
+        <textarea [(ngModel)]="nuevoPedido.detalles" name="detalles" placeholder="Detalles del pedido" class="form-control mb-2" minlength="5" #detalles="ngModel"></textarea>
+        <div *ngIf="detalles.invalid && (detalles.dirty || detalles.touched)" class="text-danger mb-2">
+          <div *ngIf="detalles.errors?.['minlength']">Debe tener al menos 5 caracteres.</div>
+        </div>
+
+        <button type="submit" class="btn btn-success" [disabled]="pedidoForm.invalid">Guardar</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+      </form>
+    </div>
+  </div>
+</div>

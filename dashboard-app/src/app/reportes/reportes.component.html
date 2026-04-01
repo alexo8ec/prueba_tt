@@ -1,0 +1,12 @@
+<div class="reportes-container">
+  <h2>Reportes</h2>
+  <form class="mb-3" (ngSubmit)="buscar()">
+    <input [(ngModel)]="busqueda" name="busqueda" placeholder="Buscar..." class="form-control mb-2" required>
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </form>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let resultado of resultados">
+      {{ resultado.nombre }} - {{ resultado.dato }}
+    </li>
+  </ul>
+</div>

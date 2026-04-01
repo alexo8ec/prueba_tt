@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 })
 export class DashboardService {
 
-    private apiUrl = 'http://localhost:8000/api/v1/dashboard';
+    private apiUrl = '/crm/api/v1/dashboard';
 
     constructor(private http: HttpClient, private auth: AuthService) { }
 

@@ -4,13 +4,14 @@ import { DashboardService } from '../services/dashboard.service';
 import Chart from 'chart.js/auto';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     standalone: true,
-    imports: [CommonModule, FormsModule]
+    imports: [CommonModule, FormsModule, RouterModule]
 })
 export class DashboardComponent implements OnInit {
     totalPedidos = 0;
