@@ -1,0 +1,35 @@
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=LaMeg@Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - backend
+
+  dotnet-sdk:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    container_name: dotnet-sdk-temp
+    working_dir: /src/AuthService
+    volumes:
+      - ./auth-service:/src
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AuthDB;User Id=sa;Password=LaMeg@Password123!;TrustServerCertificate=True;
+    depends_on:
+      - mssql
+    networks:
+      - backend
+    stdin_open: true
+    tty: true
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  sql_data:

@@ -39,7 +39,7 @@ export class RegisterComponent {
       email: this.email,
       password: this.password
     };
-    this.http.post('https://localhost:7128/api/auth/register', data).subscribe({
+    this.http.post('https://localhost/api/auth/register', data).subscribe({
       next: () => {
         this.loading = false;
         this.success = 'Registro exitoso. Ahora puedes iniciar sesión.';

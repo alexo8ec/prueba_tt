@@ -22,7 +22,7 @@ describe('Flujo completo de login', () => {
       expect(localStorage.getItem('token')).toBe(resp.token);
       done();
     });
-    const req = httpMock.expectOne('https://localhost:7128/api/auth/login');
+    const req = httpMock.expectOne('https://localhost/api/auth/login');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ email: 'alexo8ec@hotmail.com', password: '0921605895' });
     // Simula respuesta real

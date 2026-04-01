@@ -1,0 +1,85 @@
+version: '3.9'
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=LaMeg@Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - backend
+
+  php:
+    build: ./docker/php
+    container_name: laravel
+    volumes:
+      - ./crm-service:/var/www/html
+    environment:
+      - DB_CONNECTION=sqlsrv
+      - DB_HOST=mssql
+      - DB_PORT=1433
+      - DB_DATABASE=CrmDB
+      - DB_USERNAME=sa
+      - DB_PASSWORD=LaMeg@Password123!
+    depends_on:
+      - mssql
+    networks:
+      - backend
+    expose:
+      - "9000"
+
+  dotnet:
+    build:
+      context: .
+      dockerfile: docker/dotnet/Dockerfile
+    container_name: dotnet
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AuthDB;User Id=sa;Password=LaMeg@Password123!;
+    depends_on:
+      - mssql
+    networks:
+      - backend
+    expose:
+      - "80"
+
+  angular:
+    build:
+      context: ./dashboard-app
+      dockerfile: ../docker/angular/Dockerfile
+    container_name: dashboard
+    depends_on:
+      - dotnet
+    networks:
+      - backend
+    expose:
+      - "80"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+      - ./crm-service:/var/www/html
+    depends_on:
+      - php
+      - dotnet
+      - angular
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  sql_data:

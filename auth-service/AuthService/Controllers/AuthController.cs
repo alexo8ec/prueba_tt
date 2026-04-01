@@ -49,17 +49,24 @@ namespace AuthService.Controllers
         [HttpPost("login")]
         public IActionResult Login(LoginDto dto)
         {
-            var hash = HashPassword(dto.Password);
+            try
+            {
+                var hash = HashPassword(dto.Password);
 
-            var user = _context.Users
-                .FirstOrDefault(x => x.Email == dto.Email && x.PasswordHash == hash);
+                var user = _context.Users
+                    .FirstOrDefault(x => x.Email == dto.Email && x.PasswordHash == hash);
 
-            if (user == null)
-                return Unauthorized("Credenciales inválidas");
+                if (user == null)
+                    return Unauthorized("Credenciales inválidas");
 
-            var token = _jwtService.GenerateToken(user.Email);
+                var token = _jwtService.GenerateToken(user.Email);
 
-            return Ok(new { token });
+                return Ok(new { token });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.InnerException?.Message ?? ex.Message);
+            }
         }
         private string HashPassword(string password)
         {

@@ -4,11 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
+
 
 class ClienteController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/clientes",
+     *     summary="Listar clientes",
+     *     tags={"Clientes"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Listado de clientes",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Cliente")
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function index()
     {
@@ -20,9 +38,7 @@ class ClienteController extends Controller
         return response()->json(['status' => 'success', 'data' => $clientes]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         try {
@@ -38,9 +54,7 @@ class ClienteController extends Controller
         return response()->json(['status' => 'success', 'data' => Cliente::create($request->all())]);
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(int $id)
     {
         try {
@@ -51,9 +65,6 @@ class ClienteController extends Controller
         return $cliente;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, int $id)
     {
         try {
@@ -89,9 +100,7 @@ class ClienteController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(int $id)
     {
         try {
