@@ -1,0 +1,92 @@
+Crear la base por powershell
+
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "CREATE DATABASE AuthDB"
+
+  Verificar base
+
+  docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "SELECT name FROM sys.databases"
+
+  Migraciones
+
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
+
+Crear base para Laravel
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "IF DB_ID('CrmDB') IS NULL CREATE DATABASE CrmDB"
+
+
+docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd `
+  -S localhost `
+  -U sa `
+  -P "LaMeg@Password123!" `
+  -C `
+  -Q "SELECT name FROM sys.databases"
+
+
+  C#
+Inicia migraciones
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
+Reiniciar la migracion
+dotnet ef database drop
+dotnet ef database update
+
+
+Angular
+Iniciar test
+ng test
+Iniciar app/puerto
+ ng serve --port 4300
+
+Docker
+Reconstruir
+docker-compose up -d --build
+Levantar
+docker-compose up -d
+Ver logs
+docker-compose logs -f
+Detener todo
+docker-compose down
+Recosntruir
+docker-compose up -d --build
+
+docker ps                # ver contenedores activos
+docker ps -a             # todos
+docker images            # ver imágenes
+docker logs nombre       # ver logs
+docker exec -it nombre bash  # entrar al contenedor
+
+
+Swagger
+php artisan l5-swagger:generate
+
+
+Levantar temporalmente sdk net
+docker compose -f docker-compose.migrate.yml up -d
+
+
+al pasar de windows a linux rm -rf bin obj
+dotnet restore
+export PATH="$PATH:/root/.dotnet/tools"
+dotnet ef migrations list
+dotnet ef database update
+
+Entrart al contenedor
+docker exec -it dotnet-sdk-temp bash
