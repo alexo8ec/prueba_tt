@@ -1,4 +1,5 @@
 FROM node:20-alpine AS build
+LABEL maintainer="Alex Mite <alexo8ec@hotmail.com>"
 WORKDIR /app
 
 COPY package*.json ./

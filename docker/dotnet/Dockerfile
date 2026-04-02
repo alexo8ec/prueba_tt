@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+LABEL maintainer="Alex Mite <alexo8ec@hotmail.com>"
 WORKDIR /app
 EXPOSE 80
 ENV ASPNETCORE_URLS=http://+:80

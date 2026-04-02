@@ -38,6 +38,7 @@ Esto levantará:
 
 Abre una terminal y ejecuta:
 
+
 ```sh
 # Crear base de datos AuthDB (para .NET)
 docker exec -it mssql /opt/mssql-tools18/bin/sqlcmd \
@@ -180,34 +181,17 @@ Puedes agregar más pruebas siguiendo el patrón de estos archivos para validar 
 
 ---
 
-### Prueba de flujo crítico de negocio (PHP)
 
-En el backend Laravel (`crm-service`) existe el test:
-- `tests/Feature/FlujoCriticoNegocioTest.php`
+## Pruebas del flujo crítico de negocio
 
-Este test automatiza el flujo completo:
-1. Registro de usuario en AuthService (.NET)
-2. Login y obtención de JWT
-3. Creación de cliente en CRM
-4. Creación de pedido asociado
-5. Consulta del dashboard
+El test de integración del flujo crítico de negocio (registro y login) está implementado en el backend .NET (auth-service):
 
-#### Para ejecutarlo:
-
-Desde la carpeta `crm-service`:
+- Archivo: `auth-service/IntegrationTests/AuthEndpointsTests.cs`
+- Ejecución:
 
 ```sh
-php artisan test --filter=FlujoCriticoNegocioTest
+cd auth-service
+dotnet test
 ```
 
-Esto validará que todos los microservicios funcionan integrados en los flujos más importantes del negocio.
-
----
-
-- Las variables de entorno y secretos están configurados en los archivos `.env` y en los servicios de Docker.
-- El sistema utiliza JWT para autenticación entre servicios.
-- Si necesitas limpiar los contenedores y volúmenes:
-  ```sh
-  docker-compose down -v
-  ```
----
+Consulta el README de `auth-service` para más detalles y ejemplo del test.
