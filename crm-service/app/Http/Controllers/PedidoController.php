@@ -44,47 +44,26 @@ class PedidoController extends Controller
     {
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
+            'descripcion' => 'required|string',
+            'monto' => 'required|numeric',
             'estado' => 'required|in:pendiente,completado,cancelado',
             'detalles' => 'required|array|min:1',
-            'detalles.*.producto' => 'required|string',
-            'detalles.*.cantidad' => 'required|integer|min:1',
-            'detalles.*.precio' => 'required|numeric|min:0',
         ]);
-
-        DB::beginTransaction();
 
         try {
             $pedido = Pedido::create([
                 'cliente_id' => $request->cliente_id,
+                'descripcion' => $request->descripcion,
+                'monto' => $request->monto,
                 'estado' => $request->estado,
-                'total' => 0
+                'detalles' => $request->detalles,
             ]);
-
-            $total = 0;
-
-            foreach ($request->detalles as $item) {
-                $subtotal = $item['cantidad'] * $item['precio'];
-                $total += $subtotal;
-
-                $pedido->detalles()->create([
-                    'producto' => $item['producto'],
-                    'cantidad' => $item['cantidad'],
-                    'precio' => $item['precio'],
-                    'subtotal' => $subtotal
-                ]);
-            }
-
-            $pedido->update(['total' => $total]);
-
-            DB::commit();
-
-            return response()->json($pedido->load('detalles'), 201);
+            return response()->json($pedido, 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error al crear pedido'
+                'message' => 'Error al crear pedido',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -120,64 +99,25 @@ class PedidoController extends Controller
             ], 404);
         }
 
-        // 🔥 Validación flexible
         $request->validate([
+            'descripcion' => 'sometimes|string',
+            'monto' => 'sometimes|numeric',
             'estado' => 'sometimes|in:pendiente,completado,cancelado',
             'detalles' => 'sometimes|array|min:1',
-            'detalles.*.producto' => 'required_with:detalles|string',
-            'detalles.*.cantidad' => 'required_with:detalles|integer|min:1',
-            'detalles.*.precio' => 'required_with:detalles|numeric|min:0',
         ]);
 
-        DB::beginTransaction();
-
         try {
-
-            // 🟡 1. Actualizar estado (si viene)
-            if ($request->filled('estado')) {
-                $pedido->estado = $request->estado;
-            }
-
-            // 🔵 2. Actualizar detalles (si vienen)
-            if ($request->has('detalles')) {
-
-                // borrar detalles actuales
-                $pedido->detalles()->delete();
-
-                $total = 0;
-
-                foreach ($request->detalles as $item) {
-                    $subtotal = $item['cantidad'] * $item['precio'];
-                    $total += $subtotal;
-
-                    $pedido->detalles()->create([
-                        'producto' => $item['producto'],
-                        'cantidad' => $item['cantidad'],
-                        'precio' => $item['precio'],
-                        'subtotal' => $subtotal
-                    ]);
-                }
-
-                // actualizar total solo si se modifican detalles
-                $pedido->total = $total;
-            }
-
-            $pedido->save();
-
-            DB::commit();
-
+            $pedido->update($request->only(['descripcion', 'monto', 'estado', 'detalles']));
             return response()->json([
                 'status' => 'success',
                 'message' => 'Pedido actualizado correctamente',
-                'data' => $pedido->load('detalles', 'cliente')
+                'data' => $pedido
             ]);
         } catch (\Exception $e) {
-
-            DB::rollBack();
-
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error al actualizar pedido'
+                'message' => 'Error al actualizar pedido',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

@@ -108,7 +108,28 @@ php artisan migrate
 
 ---
 
-## Notas adicionales
+
+---
+
+## 5. Ejecutar tests en Laravel (crm-service)
+
+Desde la carpeta `crm-service` puedes ejecutar los tests de PHP con:
+
+```sh
+composer test
+# o
+php artisan test
+```
+
+Esto ejecutará todos los tests unitarios y de características (Feature) usando SQLite en memoria.
+
+Para ejecutar solo los tests de un archivo específico, por ejemplo solo los de pedidos:
+
+```sh
+php artisan test --filter=PedidoTest
+```
+
+---
 
 - Las variables de entorno y secretos están configurados en los archivos `.env` y en los servicios de Docker.
 - El sistema utiliza JWT para autenticación entre servicios.
